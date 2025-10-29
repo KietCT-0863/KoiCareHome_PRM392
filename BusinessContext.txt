@@ -1,0 +1,48 @@
+User : 
+- UserId
+- UserName
+- Password
+- CreateAt
+
+Pond : 
+- PondId
+- UserId
+- VolumeLiters
+- MineralAmount
+- CreateAt
+
+Fish :
+- FishId
+- PondId
+- FishName
+- FishColor
+- Length
+- Weight
+- AddDate
+- FoodAmount
+- FishImg
+
+User 1----N Pond
+Pond 1----N Fish
+
+------------------------------------------------------------------------------------------------
+
+Công Thức Chuẩn Tính Lượng Thức Ăn Cho Cá Koi
+Lượng thức ăn(gram/day) = cân nặng(gram) x 1%
+EX : cá 20kg = 20000gram
+=> lượng thức ăn = 20000 x 0.01 = 200 (gram/day)
+
+note :
+theo mùa : 
+- Xuân, Thu, Đông : 
++ dưới 10 độ C cho ăn 1-2 lần / tuần
++ trên 15 độ C cho ăn 3-4 lần / tuần
+- Hè : 
++ cho ăn mỗi ngày
+
+------------------------------------------------------------------------------------------------
+
+Công Thức Tính Lượng Khoáng Chuẩn Cho Hồ Cá Koi
+Lượng muối (kg) = Thể tích hồ (lít) x 0.3(%)
+EX : hồ 2000 lít
+=> lượng khoáng = 2000 x 0.003 = 6kg
