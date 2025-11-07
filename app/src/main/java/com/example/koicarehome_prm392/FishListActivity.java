@@ -7,6 +7,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,15 +22,53 @@ public class FishListActivity extends AppCompatActivity implements FishAdapter.O
     private FishViewModel fishViewModel;
     private FloatingActionButton fabAddFish;
     private ActivityResultLauncher<Intent> addFishLauncher;
+    private long pondId = -1; // -1 nghĩa là hiển thị tất cả cá
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fish_list);
 
+        // Nhận POND_ID từ Intent nếu có
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("POND_ID")) {
+            pondId = intent.getLongExtra("POND_ID", -1);
+        }
+
         initViews();
+        setupToolbar();
         setupRecyclerView();
         setupLauncher();
         observeData();
+        setupBottomNavigation();
+    }
+    
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar_fish_list);
+        setSupportActionBar(toolbar);
+        setTitle("Danh Sách Cá Koi");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(android.R.drawable.ic_menu_revert);
+        }
+        toolbar.setNavigationOnClickListener(v -> finish());
+    }
+    
+    private void setupBottomNavigation() {
+        android.view.View btnHome = findViewById(R.id.btnHome);
+        android.view.View btnProfile = findViewById(R.id.btnProfile);
+
+        btnHome.setOnClickListener(v -> {
+            Intent intent = new Intent(FishListActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+
+        btnProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(FishListActivity.this, ProfileActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void initViews() {
@@ -45,6 +84,9 @@ public class FishListActivity extends AppCompatActivity implements FishAdapter.O
 
         fabAddFish.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddFishActivity.class);
+            if (pondId != -1) {
+                intent.putExtra("POND_ID", pondId);
+            }
             startActivity(intent);
         });
     }
@@ -62,11 +104,21 @@ public class FishListActivity extends AppCompatActivity implements FishAdapter.O
     }
 
     private void observeData() {
-        fishViewModel.getAllFish().observe(this, fishList -> {
-            if (fishList != null) {
-                adapter.setFishList(fishList);
-            }
-        });
+        if (pondId != -1) {
+            // Hiển thị cá của hồ cụ thể
+            fishViewModel.getFishByPondId(pondId).observe(this, fishList -> {
+                if (fishList != null) {
+                    adapter.setFishList(fishList);
+                }
+            });
+        } else {
+            // Hiển thị tất cả cá
+            fishViewModel.getAllFish().observe(this, fishList -> {
+                if (fishList != null) {
+                    adapter.setFishList(fishList);
+                }
+            });
+        }
     }
 
     @Override
@@ -79,11 +131,20 @@ public class FishListActivity extends AppCompatActivity implements FishAdapter.O
     @Override
     protected void onResume() {
         super.onResume();
-        fishViewModel.getAllFish().observe(this, fishList -> {
-            if (fishList != null) {
-                adapter.setFishList(fishList);
-            }
-        });
+        // Cập nhật lại dữ liệu khi quay lại màn hình
+        if (pondId != -1) {
+            fishViewModel.getFishByPondId(pondId).observe(this, fishList -> {
+                if (fishList != null) {
+                    adapter.setFishList(fishList);
+                }
+            });
+        } else {
+            fishViewModel.getAllFish().observe(this, fishList -> {
+                if (fishList != null) {
+                    adapter.setFishList(fishList);
+                }
+            });
+        }
     }
 
     @Override

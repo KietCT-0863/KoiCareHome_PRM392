@@ -58,4 +58,8 @@ public class FishRepository {
     public LiveData<Fish> getFishById(long fishId) {
         return fishDao.getFishById(fishId);
     }
+
+    public LiveData<List<Fish>> getFishByUserId(long userId) {
+        return fishDao.getFishByUserId(userId);
+    }
 }

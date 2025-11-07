@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:background="@drawable/pond_item_border"
+    android:padding="16dp"
+    android:layout_margin="8dp">
 
     <ImageView
         android:id="@+id/icon_delete"
@@ -52,6 +54,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lượng khoáng cần: 6.00 kg"/>
+
+        <TextView
+            android:id="@+id/textViewPondFishCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Số lượng cá: 0"/>
+
+        <TextView
+            android:id="@+id/textViewPondFoodAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lượng thức ăn: 0.00 gram/ngày"/>
 
     </LinearLayout>
 

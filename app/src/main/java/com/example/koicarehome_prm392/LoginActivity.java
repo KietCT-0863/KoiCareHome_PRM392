@@ -2,12 +2,15 @@ package com.example.koicarehome_prm392;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
 
 import com.example.koicarehome_prm392.data.db.AppDatabase;
 import com.example.koicarehome_prm392.data.entities.User;
@@ -16,7 +19,7 @@ import java.util.concurrent.Executors;
 
 public class LoginActivity extends AppCompatActivity {
     EditText etUser, etPass;
-    Button btnLogin, btnGoRegister;
+    AppCompatButton btnLogin, btnGoRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,10 @@ public class LoginActivity extends AppCompatActivity {
         etPass = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnGoRegister = findViewById(R.id.btnGoRegister);
+        
+        // Set màu xanh dương cho các button
+        setupButtonColor(btnLogin);
+        setupButtonColor(btnGoRegister);
 
         btnGoRegister.setOnClickListener(v -> {
             startActivity(new Intent(this, RegisterActivity.class));
@@ -66,5 +73,15 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         });
+    }
+    
+    private void setupButtonColor(AppCompatButton button) {
+        // Set màu xanh dương cho button bằng code để đảm bảo không bị override
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setShape(GradientDrawable.RECTANGLE);
+        drawable.setColor(ContextCompat.getColor(this, R.color.water_blue));
+        drawable.setCornerRadius(12 * getResources().getDisplayMetrics().density); // 12dp
+        button.setBackground(drawable);
+        button.setBackgroundTintList(null);
     }
 }

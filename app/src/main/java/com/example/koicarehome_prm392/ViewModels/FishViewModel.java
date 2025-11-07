@@ -45,6 +45,10 @@ public class FishViewModel extends AndroidViewModel {
         return repository.getFishById(fishId);
     }
 
+    public LiveData<List<Fish>> getFishByUserId(long userId) {
+        return repository.getFishByUserId(userId);
+    }
+
     // Helper method để tính lượng thức ăn
     public double calculateFoodAmount(double weightGrams) {
         return repository.calculateFoodAmount(weightGrams);

@@ -31,6 +31,20 @@ public interface FishDao {
     LiveData<List<Fish>> getAllFish();
     @Query("DELETE FROM fish WHERE fishId = :fishId")
     void deleteById(long fishId);
+    
+    @Query("SELECT COUNT(*) FROM fish WHERE pondId = :pondId")
+    int getFishCountByPondId(long pondId);
+    
+    @Query("SELECT SUM(foodAmount) FROM fish WHERE pondId = :pondId")
+    double getTotalFoodAmountByPondId(long pondId);
+    
+    @Query("SELECT COALESCE(SUM(f.foodAmount), 0) FROM fish f " +
+           "INNER JOIN ponds p ON f.pondId = p.pondId WHERE p.userId = :userId")
+    double getTotalFoodAmountByUserId(long userId);
+    
+    @Query("SELECT f.* FROM fish f " +
+           "INNER JOIN ponds p ON f.pondId = p.pondId WHERE p.userId = :userId ORDER BY f.addDate DESC")
+    LiveData<List<Fish>> getFishByUserId(long userId);
 //    @Query("SELECT * FROM fish WHERE pondId = :pondId")
 //    List<Fish> getFishForPond(long pondId);
     //đã có hàm get fishbypond ở trên

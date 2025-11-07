@@ -6,10 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,16 +31,18 @@ import java.util.List;
 
 public class AddFishActivity extends AppCompatActivity {
     private EditText etFishName, etFishColor, etLength, etWeight;
-    private Spinner spinnerPond;
     private ImageView ivFishPreview;
     private Button btnSelectImage, btnSaveFish;
-    private TextView tvFoodAmount;
+    private TextView tvFoodAmount, tvSelectedPond;
+    private Spinner spinnerPond;
+    private LinearLayout llPondSelection;
 
     private FishViewModel fishViewModel;
     private PondViewModel pondViewModel;
     private List<Pond> pondList = new ArrayList<>();
     private String selectedImageUri = "";
     private long editFishId = -1;
+    private long preSelectedPondId = -1; // POND_ID được truyền từ Intent
 
     private ActivityResultLauncher<Intent> imagePickerLauncher;
 
@@ -51,13 +55,23 @@ public class AddFishActivity extends AppCompatActivity {
         initViewModels();
         setupImagePicker();
         setupListeners();
+        
+        // Kiểm tra xem có POND_ID được truyền từ Intent không
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("POND_ID")) {
+            preSelectedPondId = intent.getLongExtra("POND_ID", -1);
+        }
+        
         loadPonds();
 
         // Check if editing
-        if (getIntent().hasExtra("FISH_ID")) {
-            editFishId = getIntent().getLongExtra("FISH_ID", -1);
+        if (intent != null && intent.hasExtra("FISH_ID")) {
+            editFishId = intent.getLongExtra("FISH_ID", -1);
             loadFishData(editFishId);
         }
+        
+        // Cấu hình hiển thị spinner hoặc TextView dựa trên preSelectedPondId
+        setupPondSelection();
     }
 
     private void initViews() {
@@ -65,11 +79,13 @@ public class AddFishActivity extends AppCompatActivity {
         etFishColor = findViewById(R.id.etFishColor);
         etLength = findViewById(R.id.etLength);
         etWeight = findViewById(R.id.etWeight);
-        spinnerPond = findViewById(R.id.spinnerPond);
         ivFishPreview = findViewById(R.id.ivFishPreview);
         btnSelectImage = findViewById(R.id.btnSelectImage);
         btnSaveFish = findViewById(R.id.btnSaveFish);
         tvFoodAmount = findViewById(R.id.tvFoodAmount);
+        spinnerPond = findViewById(R.id.spinnerPond);
+        llPondSelection = findViewById(R.id.llPondSelection);
+        tvSelectedPond = findViewById(R.id.tvSelectedPond);
     }
 
     private void initViewModels() {
@@ -139,14 +155,59 @@ public class AddFishActivity extends AppCompatActivity {
         pondViewModel.getPondsByUserId(currentUserId).observe(this, ponds -> {
             if (ponds != null) {
                 pondList = ponds;
-                List<String> pondNames = new ArrayList<>();
-                for (Pond pond : ponds) {
-                    pondNames.add("Hồ " + pond.pondId + " - " + pond.volumeLiters + "L");
+                // Nếu không có preSelectedPondId, setup spinner
+                if (preSelectedPondId == -1) {
+                    setupSpinner(ponds);
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                        this, android.R.layout.simple_spinner_item, pondNames);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerPond.setAdapter(adapter);
+            }
+        });
+    }
+    
+    private void setupPondSelection() {
+        if (preSelectedPondId != -1) {
+            // Có POND_ID: ẩn spinner, hiển thị TextView với thông tin hồ
+            llPondSelection.setVisibility(android.view.View.GONE);
+            tvSelectedPond.setVisibility(android.view.View.VISIBLE);
+            // Load thông tin hồ để hiển thị
+            pondViewModel.getPondById(preSelectedPondId).observe(this, pond -> {
+                if (pond != null) {
+                    tvSelectedPond.setText("Hồ đã chọn: Hồ số " + pond.pondId + " (Thể tích: " + (int)pond.volumeLiters + " L)");
+                }
+            });
+        } else {
+            // Không có POND_ID: hiển thị spinner, ẩn TextView
+            llPondSelection.setVisibility(android.view.View.VISIBLE);
+            tvSelectedPond.setVisibility(android.view.View.GONE);
+        }
+    }
+    
+    private void setupSpinner(List<Pond> ponds) {
+        if (ponds == null || ponds.isEmpty()) {
+            return;
+        }
+        
+        // Tạo danh sách tên hồ để hiển thị
+        List<String> pondNames = new ArrayList<>();
+        for (Pond pond : ponds) {
+            pondNames.add("Hồ số " + pond.pondId + " (Thể tích: " + (int)pond.volumeLiters + " L)");
+        }
+        
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
+            android.R.layout.simple_spinner_item, pondNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPond.setAdapter(adapter);
+        
+        spinnerPond.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
+                if (position >= 0 && position < ponds.size()) {
+                    preSelectedPondId = ponds.get(position).pondId;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                preSelectedPondId = -1;
             }
         });
     }
@@ -162,14 +223,11 @@ public class AddFishActivity extends AppCompatActivity {
                 if (!selectedImageUri.isEmpty()) {
                     ivFishPreview.setImageURI(Uri.parse(selectedImageUri));
                 }
-
-                // Select correct pond
-                for (int i = 0; i < pondList.size(); i++) {
-                    if (pondList.get(i).pondId == fish.pondId) {
-                        spinnerPond.setSelection(i);
-                        break;
-                    }
-                }
+                
+                // Lưu pondId từ fish đang edit
+                preSelectedPondId = fish.pondId;
+                // Cập nhật lại UI sau khi có preSelectedPondId
+                setupPondSelection();
             }
         });
     }
@@ -230,7 +288,13 @@ public class AddFishActivity extends AppCompatActivity {
             return;
         }
 
-        long pondId = pondList.get(spinnerPond.getSelectedItemPosition()).pondId;
+        // Kiểm tra xem có pondId không
+        long pondId = preSelectedPondId;
+        if (pondId == -1) {
+            // Nếu không có POND_ID, yêu cầu chọn từ spinner
+            Toast.makeText(this, "Vui lòng chọn hồ trước khi thêm cá", Toast.LENGTH_SHORT).show();
+            return;
+        }
         double foodAmount = fishViewModel.calculateFoodAmount(weight);
 
         if (editFishId == -1) {

@@ -13,10 +13,14 @@ import com.example.koicarehome_prm392.R;
 import com.example.koicarehome_prm392.data.entities.Pond;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PondAdapter extends RecyclerView.Adapter<PondAdapter.PondHolder> {
     private List<Pond> ponds = new ArrayList<>();
+    private Map<Long, Integer> fishCountMap = new HashMap<>(); // pondId -> số lượng cá
+    private Map<Long, Double> foodAmountMap = new HashMap<>(); // pondId -> lượng thức ăn
     private OnItemActionClickListener listener; // *** SỬA: Đổi tên listener ***
 
     @NonNull
@@ -34,6 +38,14 @@ public class PondAdapter extends RecyclerView.Adapter<PondAdapter.PondHolder> {
         holder.textViewTitle.setText("Hồ số: " + currentPond.pondId);
         holder.textViewVolume.setText(String.format("Thể tích: %.0f L", currentPond.volumeLiters));
         holder.textViewMineral.setText(String.format("Lượng khoáng cần: %.2f kg", currentPond.mineralAmount));
+        
+        // Hiển thị số lượng cá
+        int fishCount = fishCountMap.getOrDefault(currentPond.pondId, 0);
+        holder.textViewFishCount.setText("Số lượng cá: " + fishCount);
+        
+        // Hiển thị lượng thức ăn
+        double foodAmount = foodAmountMap.getOrDefault(currentPond.pondId, 0.0);
+        holder.textViewFoodAmount.setText(String.format("Lượng thức ăn: %.2f gram/ngày", foodAmount));
     }
 
     @Override
@@ -45,6 +57,23 @@ public class PondAdapter extends RecyclerView.Adapter<PondAdapter.PondHolder> {
         this.ponds = ponds;
         notifyDataSetChanged();
     }
+    
+    public void setPondInfo(long pondId, int fishCount, double foodAmount) {
+        fishCountMap.put(pondId, fishCount);
+        foodAmountMap.put(pondId, foodAmount);
+        // Tìm vị trí của hồ trong list và cập nhật
+        for (int i = 0; i < ponds.size(); i++) {
+            if (ponds.get(i).pondId == pondId) {
+                notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+    
+    public void clearPondInfo() {
+        fishCountMap.clear();
+        foodAmountMap.clear();
+    }
 
     public Pond getPondAt(int position) {
         return ponds.get(position);
@@ -54,6 +83,8 @@ public class PondAdapter extends RecyclerView.Adapter<PondAdapter.PondHolder> {
         private TextView textViewTitle;
         private TextView textViewVolume;
         private TextView textViewMineral;
+        private TextView textViewFishCount;
+        private TextView textViewFoodAmount;
         private ImageView iconEdit;     // *** THÊM MỚI ***
         private ImageView iconDelete;   // *** THÊM MỚI ***
 
@@ -62,6 +93,8 @@ public class PondAdapter extends RecyclerView.Adapter<PondAdapter.PondHolder> {
             textViewTitle = itemView.findViewById(R.id.textViewPondTitle);
             textViewVolume = itemView.findViewById(R.id.textViewPondVolume);
             textViewMineral = itemView.findViewById(R.id.textViewPondMineral);
+            textViewFishCount = itemView.findViewById(R.id.textViewPondFishCount);
+            textViewFoodAmount = itemView.findViewById(R.id.textViewPondFoodAmount);
             iconEdit = itemView.findViewById(R.id.icon_edit);       // *** THÊM MỚI ***
             iconDelete = itemView.findViewById(R.id.icon_delete);   // *** THÊM MỚI ***
 
