@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.koicarehome_prm392.data.dao.FishDao;
 import com.example.koicarehome_prm392.data.dao.PondDao;
 import com.example.koicarehome_prm392.data.db.AppDatabase;
 import com.example.koicarehome_prm392.data.entities.Pond;
@@ -20,12 +21,14 @@ import java.util.concurrent.Executors;
 public class PondViewModel extends AndroidViewModel {
 
     private final PondDao pondDao;
+    private final FishDao fishDao;
     private final ExecutorService executorService;
 
     public PondViewModel(@NonNull Application application) {
         super(application);
         AppDatabase database = AppDatabase.getInstance(application);
         pondDao = database.pondDao();
+        fishDao = database.fishDao();
         // Tối ưu: Chỉ tạo một luồng duy nhất để xử lý tất cả các tác vụ CSDL
         executorService = Executors.newSingleThreadExecutor();
     }
@@ -44,6 +47,17 @@ public class PondViewModel extends AndroidViewModel {
 
     public LiveData<List<Pond>> getPondsByUserId(long userId) {
         return pondDao.getPondsByUserId(userId);
+    }
+
+    public LiveData<Pond> getPondById(long pondId) {
+        return pondDao.getPondById(pondId);
+    }
+
+    public void getFishCountByPondId(long pondId, java.util.function.Consumer<Integer> callback) {
+        executorService.execute(() -> {
+            int count = fishDao.getFishCountByPondId(pondId);
+            callback.accept(count);
+        });
     }
 
     // Đảm bảo ExecutorService được đóng lại khi ViewModel bị hủy

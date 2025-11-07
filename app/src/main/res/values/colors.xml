@@ -2,4 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Màu chủ đề cá cảnh -->
+    <color name="water_blue">#0288D1</color>
+    <color name="water_blue_dark">#01579B</color>
+    <color name="koi_orange">#FF6F00</color>
+    <color name="koi_orange_light">#FF9800</color>
+    <color name="aqua_teal">#00ACC1</color>
+    <color name="gold_yellow">#FFD700</color>
+    <color name="dark_black">#1A1A1A</color>
 </resources>

@@ -85,24 +85,28 @@
                 <Space android:layout_width="match_parent" android:layout_height="16dp"/>
 
                 <!-- Login button -->
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnLogin"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:text="@string/login_button"
-                    android:backgroundTint="?attr/colorPrimary"
-                    android:textColor="@android:color/white" />
+                    android:background="@drawable/button_logout"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <Space android:layout_width="match_parent" android:layout_height="8dp"/>
 
                 <!-- Go to Register -->
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnGoRegister"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:text="@string/go_register_button"
-                    android:backgroundTint="?attr/colorPrimary"
-                    android:textColor="@android:color/white" />
+                    android:background="@drawable/button_logout"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- optional footer -->

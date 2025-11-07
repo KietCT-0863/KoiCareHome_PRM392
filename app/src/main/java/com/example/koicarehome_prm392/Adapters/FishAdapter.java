@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -53,8 +52,8 @@ public class FishAdapter extends RecyclerView.Adapter<FishAdapter.FishViewHolder
             holder.ivFish.setImageURI(Uri.parse(fish.fishImg));
         }
 
-        holder.btnEdit.setOnClickListener(v -> listener.onEditClick(fish));
-        holder.btnDelete.setOnClickListener(v -> listener.onDeleteClick(fish));
+        holder.iconEdit.setOnClickListener(v -> listener.onEditClick(fish));
+        holder.iconDelete.setOnClickListener(v -> listener.onDeleteClick(fish));
     }
 
     @Override
@@ -69,19 +68,19 @@ public class FishAdapter extends RecyclerView.Adapter<FishAdapter.FishViewHolder
 
     static class FishViewHolder extends RecyclerView.ViewHolder {
         ImageView ivFish;
+        ImageView iconEdit, iconDelete;
         TextView tvFishName, tvFishColor, tvFishSize, tvFoodAmount, tvPondInfo;
-        ImageButton btnEdit, btnDelete;
 
         public FishViewHolder(@NonNull View itemView) {
             super(itemView);
             ivFish = itemView.findViewById(R.id.ivFish);
+            iconEdit = itemView.findViewById(R.id.icon_edit);
+            iconDelete = itemView.findViewById(R.id.icon_delete);
             tvFishName = itemView.findViewById(R.id.tvFishName);
             tvFishColor = itemView.findViewById(R.id.tvFishColor);
             tvFishSize = itemView.findViewById(R.id.tvFishSize);
             tvPondInfo = itemView.findViewById(R.id.tvPondInfo); //them thong tin ho ca
             tvFoodAmount = itemView.findViewById(R.id.tvFoodAmount);
-            btnEdit = itemView.findViewById(R.id.btnEdit);
-            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
 }

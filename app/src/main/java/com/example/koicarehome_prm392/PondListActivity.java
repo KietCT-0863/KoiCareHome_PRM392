@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.koicarehome_prm392.Adapters.PondAdapter;
+import com.example.koicarehome_prm392.data.db.AppDatabase;
 import com.example.koicarehome_prm392.data.entities.Pond;
 import com.example.koicarehome_prm392.ViewModels.PondViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -73,17 +74,42 @@ public class PondListActivity extends AppCompatActivity {
 
             @Override
             public void onDeleteClick(Pond pond) {
-                // Hiển thị hộp thoại xác nhận trước khi xóa
-                new AlertDialog.Builder(PondListActivity.this)
-                        .setTitle("Xác nhận xóa")
-                        .setMessage("Bạn có chắc chắn muốn xóa " + "Hồ số: " + pond.pondId + "?")
-                        .setPositiveButton("Xóa", (dialog, which) -> {
-                            // Nếu người dùng chọn "Xóa", thì mới thực hiện xóa
-                            pondViewModel.delete(pond);
-                            Toast.makeText(PondListActivity.this, "Đã xóa hồ", Toast.LENGTH_SHORT).show();
-                        })
-                        .setNegativeButton("Hủy", null) // Không làm gì nếu người dùng chọn "Hủy"
-                        .show();
+                // Kiểm tra số lượng cá trong hồ trước khi xóa
+                new Thread(() -> {
+                    try {
+                        AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+                        int fishCount = db.fishDao().getFishCountByPondId(pond.pondId);
+                        
+                        runOnUiThread(() -> {
+                            if (fishCount > 0) {
+                                // Hồ còn cá, không cho phép xóa
+                                new AlertDialog.Builder(PondListActivity.this)
+                                        .setTitle("Không thể xóa hồ")
+                                        .setMessage("Hồ số " + pond.pondId + " đang có " + fishCount + " con cá. " +
+                                                "Vui lòng xóa hoặc di chuyển tất cả cá trước khi xóa hồ.")
+                                        .setPositiveButton("Đồng ý", null)
+                                        .show();
+                            } else {
+                                // Hồ không có cá, cho phép xóa
+                                new AlertDialog.Builder(PondListActivity.this)
+                                        .setTitle("Xác nhận xóa")
+                                        .setMessage("Bạn có chắc chắn muốn xóa Hồ số: " + pond.pondId + "?")
+                                        .setPositiveButton("Xóa", (dialog, which) -> {
+                                            // Nếu người dùng chọn "Xóa", thì mới thực hiện xóa
+                                            pondViewModel.delete(pond);
+                                            Toast.makeText(PondListActivity.this, "Đã xóa hồ", Toast.LENGTH_SHORT).show();
+                                        })
+                                        .setNegativeButton("Hủy", null) // Không làm gì nếu người dùng chọn "Hủy"
+                                        .show();
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        runOnUiThread(() -> {
+                            Toast.makeText(PondListActivity.this, "Lỗi kiểm tra thông tin hồ", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                }).start();
             }
         });
     }

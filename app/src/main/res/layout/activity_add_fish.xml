@@ -17,6 +17,38 @@
             android:textStyle="bold"
             android:layout_marginBottom="20dp"/>
 
+        <!-- Spinner chọn hồ (chỉ hiển thị khi không có POND_ID) -->
+        <LinearLayout
+            android:id="@+id/llPondSelection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chọn hồ"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+            <Spinner
+                android:id="@+id/spinnerPond"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <!-- TextView hiển thị hồ đã chọn (chỉ hiển thị khi có POND_ID) -->
+        <TextView
+            android:id="@+id/tvSelectedPond"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hồ đã chọn: "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"/>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,13 +94,6 @@
                 android:hint="Cân nặng (kg)"
                 android:inputType="numberDecimal"/>
         </com.google.android.material.textfield.TextInputLayout>
-
-        <Spinner
-            android:id="@+id/spinnerPond"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:minHeight="48dp"/>
 
         <ImageView
             android:id="@+id/ivFishPreview"
