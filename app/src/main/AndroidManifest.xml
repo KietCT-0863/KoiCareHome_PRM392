@@ -20,8 +20,19 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".RegisterActivity" />
+<<<<<<< HEAD
         <activity android:name=".AddFishActivity" android:exported="false" />
         <activity android:name=".FishListActivity" android:exported="false" />
+=======
+
+        <!-- Khai báo cho các Activity của chức năng Pond -->
+        <activity
+            android:name=".pond.PondListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pond.AddEditPondActivity"
+            android:exported="false" />
+>>>>>>> origin/main
     </application>
 
 </manifest>

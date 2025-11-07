@@ -1,0 +1,59 @@
+<!-- File: res/layout/activity_add_edit_pond.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".pond.AddEditPondActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_add_edit_pond"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_margin="-16dp"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <EditText
+        android:id="@+id/etPondVolume"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar_add_edit_pond"
+        android:layout_marginTop="32dp"
+        android:hint="Nhập thể tích hồ (lít)"
+        android:inputType="numberDecimal" />
+
+    <!-- *** BỌC 2 NÚT BẤM VÀO MỘT LINEARLAYOUT *** -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etPondVolume"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <!-- Nút Hủy (Cancel) -->
+        <Button
+            android:id="@+id/btnCancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Hủy"
+            android:textColor="?attr/colorPrimary"/> <!-- Thay đổi màu chữ cho nổi bật -->
+
+        <!-- Nút Lưu Hồ (Save) -->
+        <Button
+            android:id="@+id/btnSavePond"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="?attr/colorPrimary"
+            android:text="Lưu Hồ"
+            android:textColor="@android:color/white"/> <!-- Đổi màu nền để làm nút chính -->
+
+    </LinearLayout>
+
+</RelativeLayout>

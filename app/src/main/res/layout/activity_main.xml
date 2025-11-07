@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <Button
+<<<<<<< HEAD
         android:id="@+id/btnFishList"
         android:layout_width="303dp"
         android:layout_height="53dp"
@@ -28,5 +29,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp" />
+=======
+        android:id="@+id/btn_go_to_ponds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quản lý hồ cá"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+>>>>>>> origin/main
 
 </androidx.constraintlayout.widget.ConstraintLayout>
