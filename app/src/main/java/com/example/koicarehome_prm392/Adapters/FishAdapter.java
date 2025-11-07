@@ -21,6 +21,7 @@ public class FishAdapter extends RecyclerView.Adapter<FishAdapter.FishViewHolder
     private List<Fish> fishList = new ArrayList<>();
     private OnFishClickListener listener;
 
+
     public interface OnFishClickListener {
         void onEditClick(Fish fish);
         void onDeleteClick(Fish fish);
@@ -44,6 +45,7 @@ public class FishAdapter extends RecyclerView.Adapter<FishAdapter.FishViewHolder
         holder.tvFishName.setText(fish.fishName);
         holder.tvFishColor.setText("Màu: " + fish.fishColor);
         holder.tvFishSize.setText(fish.length + "cm - " + fish.weight + "g");
+        holder.tvPondInfo.setText("Hồ: " + fish.pondId);
         holder.tvFoodAmount.setText("Thức ăn: " + String.format("%.2f", fish.foodAmount) + "g/ngày");
 
         // Load image
@@ -67,7 +69,7 @@ public class FishAdapter extends RecyclerView.Adapter<FishAdapter.FishViewHolder
 
     static class FishViewHolder extends RecyclerView.ViewHolder {
         ImageView ivFish;
-        TextView tvFishName, tvFishColor, tvFishSize, tvFoodAmount;
+        TextView tvFishName, tvFishColor, tvFishSize, tvFoodAmount, tvPondInfo;
         ImageButton btnEdit, btnDelete;
 
         public FishViewHolder(@NonNull View itemView) {
@@ -76,6 +78,7 @@ public class FishAdapter extends RecyclerView.Adapter<FishAdapter.FishViewHolder
             tvFishName = itemView.findViewById(R.id.tvFishName);
             tvFishColor = itemView.findViewById(R.id.tvFishColor);
             tvFishSize = itemView.findViewById(R.id.tvFishSize);
+            tvPondInfo = itemView.findViewById(R.id.tvPondInfo); //them thong tin ho ca
             tvFoodAmount = itemView.findViewById(R.id.tvFoodAmount);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
